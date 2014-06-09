@@ -4,8 +4,8 @@ EDA Project 2 -- Air Pollution Dataset Workbook
 Data Loading
 ------------
 
-```{r data loading}
-chdir('~/airpol')
+```{r pollutant data loading, cache = TRUE}
+setwd('~/airpol')
 download.file('https://d396qusza40orc.cloudfront.net/exdata%2Fdata%2FNEI_data.zip',method='curl',destfile='NEI_data.zip')
 unzip('NEI_data.zip')
 NEI <- readRDS("summarySCC_PM25.rds")
@@ -17,7 +17,7 @@ Data Checking
 
 Make sure I've got what I want ...
 
-```{r Pollutant types check}
+```{r Pollutant types check, cache = TRUE}
 foo <- as.factor(NEI$Pollutant)
 levels(foo)
 rm(foo)
@@ -32,11 +32,15 @@ years 1999, 2002, 2005, and 2008.
 
 I'm gonna do this in __Plot1.R__
 
-```{r Generate plot1.png}
+```{r Get year totals, cache = TRUE}
 yearTotals <- as.data.frame(rowsum (NEI$Emissions, NEI$year, reorder = TRUE))
-png('plot1.png')
+```
+
+```{r Year total barplot, fig.width=5, fig.height=5}
 barplot (yearTotals$V1, names.arg = row.names(yearTotals), main = "Annual PM25 Pollution Totals" )
-dev.off()
 ```
 
 Question 2
+----------
+
+__Question:__ 
