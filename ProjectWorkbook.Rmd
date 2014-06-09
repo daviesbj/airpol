@@ -37,10 +37,22 @@ yearTotals <- as.data.frame(rowsum (NEI$Emissions, NEI$year, reorder = TRUE))
 ```
 
 ```{r Year total barplot, fig.width=5, fig.height=5}
-barplot (yearTotals$V1, names.arg = row.names(yearTotals), main = "Annual PM25 Pollution Totals" )
+barplot (yearTotals$V1, names.arg = row.names(yearTotals), main = "Nationwide Annual PM25 Pollution Totals" )
 ```
 
 Question 2
 ----------
 
-__Question:__ 
+__Question:__ Have total emissions from PM2.5 decreased in the Baltimore City, Maryland
+(fips == "24510") from 1999 to 2008? Use the base plotting system to make a plot
+answering this question.
+
+Done in __Plot2.R__
+
+```{r Filter down to Baltimore, cache = TRUE}
+baltiNEI <- NEI[NEI$fips=='24510']
+baltiYearTotals <- as.data.frame(rowsum (baltiNEI$Emissions, baltiNEI$year, reorder = TRUE))
+```
+```{r Plot Baltimore Year Totals, fig.width=5, fig.height=5}
+barplot (baltiYearTotals$V1, names.arg = row.names(baltiYearTotals), main = "Baltimore Annual PM25 Pollution Totals" )
+```
