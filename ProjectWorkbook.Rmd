@@ -50,9 +50,25 @@ answering this question.
 Done in __Plot2.R__
 
 ```{r Filter down to Baltimore, cache = TRUE}
-baltiNEI <- NEI[NEI$fips=='24510']
+baltiNEI <- NEI[NEI$fips=='24510',]
 baltiYearTotals <- as.data.frame(rowsum (baltiNEI$Emissions, baltiNEI$year, reorder = TRUE))
 ```
 ```{r Plot Baltimore Year Totals, fig.width=5, fig.height=5}
 barplot (baltiYearTotals$V1, names.arg = row.names(baltiYearTotals), main = "Baltimore Annual PM25 Pollution Totals" )
+```
+
+Question 3
+----------
+
+__Question:__ Of the four types of sources indicated by the type (point,
+nonpoint, onroad, nonroad) variable, which of these four sources have seen
+decreases in emissions from 1999–2008 for Baltimore City? Which have seen
+increases in emissions from 1999–2008? Use the ggplot2 plotting system to make
+a plot answer[ing] this question.
+
+Done in __Plot3.R__
+
+```{r recast Baltimore year/type data}
+baltiMelt <- melt(baltiNEI,id.vars=c("type","year","fips","SCC","Pollutant"),value.name="Emissions")
+baltiYearType <- dcast (baltiMelt, type+year ~ variable, fun.aggregate = sum)
 ```
