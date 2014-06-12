@@ -69,6 +69,29 @@ a plot answer[ing] this question.
 Done in __Plot3.R__
 
 ```{r recast Baltimore year/type data}
-baltiMelt <- melt(baltiNEI,id.vars=c("type","year","fips","SCC","Pollutant"),value.name="Emissions")
+library ("reshape2")
+baltiMelt <- melt (baltiNEI, id.vars = c("type", "year", "fips", "SCC", "Pollutant"), value.name = "Emissions")
 baltiYearType <- dcast (baltiMelt, type+year ~ variable, fun.aggregate = sum)
 ```
+```{r Baltimore year/type exploratory plot, fig.width = 8, fig.height = 5}
+g<-ggplot(baltiYearType,aes(year,Emissions))
+g+geom_bar(stat='identity') + facet_grid( . ~ type )
+```
+
+Question 4
+----------
+
+__Question:__ Across the United States, how have emissions from coal
+combustion-related sources changed from 1999–2008?
+
+Done in __Plot4.R__
+
+```{r Analysis of nationwide coal combustion sources}
+coalTypes <- SCC [grepl ('coal', SCC$Short.Name, ignore.case = TRUE) & grepl ('comb',S CC$Short.Name, ignore.case =TRUE), ]
+coalCombNEI <- NEI [is.element (NEI$SCC, coalTypes$SCC), ]
+coalCombYearTotals <- as.data.frame (rowsum (coalCombNEI$Emissions, coalCombNEI$year, reorder = TRUE))
+```
+```{r Nationwide coal combustion plot, fig.width = 5, fig.height = 5}
+barplot (coalCombYearTotals$V1, names.arg = row.names (coalCombYearTotals), main = "Nationwide Annual Coal Combustion PM25 Totals" )
+```
+
