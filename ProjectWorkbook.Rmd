@@ -95,3 +95,51 @@ coalCombYearTotals <- as.data.frame (rowsum (coalCombNEI$Emissions, coalCombNEI$
 barplot (coalCombYearTotals$V1, names.arg = row.names (coalCombYearTotals), main = "Nationwide Annual Coal Combustion PM25 Totals" )
 ```
 
+Question 5
+----------
+
+__Question:__ How have emissions from motor vehicle sources changed from 1999–2008 in Baltimore City?
+
+Done in __Plot5.R__
+
+Actually quite difficult to boil it down to cars, motorbikes, trucks, what else? Construction vehicles maybe?
+
+```{r filter motor vehicle sources -- first try}
+possibleVehTypes <- SCC[
+(!grepl('ext comb|int comb|stationary|locomotive|coating|aircraft|pleasure craft|commercial equipt',SCC$Short.Name,ignore.case=TRUE))&
+(!grepl('agriculture|fuel comb|cooking|^dust|fires|^industrial|solvent|locomotives|marine|aircraft|waste disposal|NEC|gas stations|non-road equipment',SCC$EI.Sector,ignore.case=TRUE))
+,]
+```
+
+... ah, fuhgeddaboutit ...
+
+```{r filter motor vehicle sources -- second try}
+vehTypes <- SCC[grepl('veh',SCC$EI.Sector,ignore.case=TRUE),]
+baltiVeh <- baltiNEI <- NEI[NEI$fips=='24510'&is.element(NEI$SCC,vehTypes$SCC),]
+baltiVehYearTotals <- as.data.frame(rowsum (baltiVeh$Emissions, baltiVeh$year, reorder = TRUE))
+```
+```{r Baltimore vehicles emissions plot, fig.width = 5, fig.height = 5 }
+barplot (baltiVehYearTotals$V1, names.arg = row.names(baltiVehYearTotals), main = "Baltimore Annual Vehicle PM25 Pollution" )
+```
+
+Question 6
+----------
+
+__Question:__ Compare emissions from motor vehicle sources in Baltimore City
+with emissions from motor vehicle sources in Los Angeles County, California
+(fips == "06037"). Which city has seen greater changes over time in motor
+vehicle emissions?
+
+Done in __Plot6.R__
+
+```{r Get Baltimore + LA Vehicle Data}
+baltiLosAngVeh <- NEI[(NEI$fips=='24510'|NEI$fips=='06037')&is.element(NEI$SCC,vehTypes$SCC),]
+library('reshape2')
+baltiLaMelt <- melt (baltiLosAngVeh, id.vars = c("type", "year", "fips", "SCC", "Pollutant"), value.name = "Emissions")
+fipsYear <- dcast (baltiLaMelt, fips+year ~ variable, fun.aggregate = sum)
+```
+```{r plot Baltimore + LA Vehicles, fig.width = 8, fig.height = 5 }
+library('ggplot2')
+g<-ggplot(fipsYear,aes(year,Emissions))
+g + geom_bar(stat='identity') + facet_grid( . ~ fips ) + scale_y_log10(breaks = c(10,100,1000)) + ylab('Emissions -- Log Scale') + ggtitle("LA & Baltimore Vehicle Emissions")
+```
