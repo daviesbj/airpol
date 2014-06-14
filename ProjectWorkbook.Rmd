@@ -115,7 +115,7 @@ possibleVehTypes <- SCC[
 
 ```{r filter motor vehicle sources -- second try}
 vehTypes <- SCC[grepl('veh',SCC$EI.Sector,ignore.case=TRUE),]
-baltiVeh <- baltiNEI <- NEI[NEI$fips=='24510'&is.element(NEI$SCC,vehTypes$SCC),]
+baltiVeh <- NEI[NEI$fips=='24510'&is.element(NEI$SCC,vehTypes$SCC),]
 baltiVehYearTotals <- as.data.frame(rowsum (baltiVeh$Emissions, baltiVeh$year, reorder = TRUE))
 ```
 ```{r Baltimore vehicles emissions plot, fig.width = 5, fig.height = 5 }
