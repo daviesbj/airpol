@@ -20,10 +20,11 @@ SCC <- readRDS("Source_Classification_Code.rds")
 ## END of common part
 
 ## Statistical summary of data
-yearTotals <- as.data.frame(rowsum (NEI$Emissions, NEI$year, reorder = TRUE))
+coalTypes <- SCC [grepl ('coal', SCC$Short.Name, ignore.case = TRUE) & grepl ('comb', SCC$Short.Name, ignore.case =TRUE), ]
+coalCombNEI <- NEI [is.element (NEI$SCC, coalTypes$SCC), ]
+coalCombYearTotals <- as.data.frame (rowsum (coalCombNEI$Emissions, coalCombNEI$year, reorder = TRUE))
 
 ## Make the plot
-png('plot1.png')
-barplot (yearTotals$V1, names.arg = row.names(yearTotals), main = "Annual PM25 Pollution Totals" )
+png('plot4.png')
+barplot (coalCombYearTotals$V1, names.arg = row.names (coalCombYearTotals), main = "Nationwide Annual Coal Combustion PM25 Totals" )
 dev.off()
-

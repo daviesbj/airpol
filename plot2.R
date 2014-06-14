@@ -20,10 +20,11 @@ SCC <- readRDS("Source_Classification_Code.rds")
 ## END of common part
 
 ## Statistical summary of data
-yearTotals <- as.data.frame(rowsum (NEI$Emissions, NEI$year, reorder = TRUE))
+baltiNEI <- NEI[NEI$fips=='24510',]
+baltiYearTotals <- as.data.frame(rowsum (baltiNEI$Emissions, baltiNEI$year, reorder = TRUE))
 
 ## Make the plot
-png('plot1.png')
-barplot (yearTotals$V1, names.arg = row.names(yearTotals), main = "Annual PM25 Pollution Totals" )
+png('plot2.png')
+barplot (baltiYearTotals$V1, names.arg = row.names(baltiYearTotals), main = "Baltimore Annual PM25 Pollution Totals" )
 dev.off()
 

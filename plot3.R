@@ -20,10 +20,14 @@ SCC <- readRDS("Source_Classification_Code.rds")
 ## END of common part
 
 ## Statistical summary of data
-yearTotals <- as.data.frame(rowsum (NEI$Emissions, NEI$year, reorder = TRUE))
+baltiNEI <- NEI[NEI$fips=='24510',]
+library ("reshape2")
+baltiMelt <- melt (baltiNEI, id.vars = c("type", "year", "fips", "SCC", "Pollutant"), value.name = "Emissions")
+baltiYearType <- dcast (baltiMelt, type+year ~ variable, fun.aggregate = sum)
 
 ## Make the plot
-png('plot1.png')
-barplot (yearTotals$V1, names.arg = row.names(yearTotals), main = "Annual PM25 Pollution Totals" )
-dev.off()
+library('ggplot2')
+g<-ggplot(baltiYearType,aes(year,Emissions))
+g+geom_bar(stat='identity') + facet_grid( . ~ type )
+ggsave (filename = 'plot3.png' )
 
